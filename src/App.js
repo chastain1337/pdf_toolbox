@@ -1,37 +1,21 @@
-import React, { Component } from 'react';
-import './App.css';
-const fs = window.require("fs")
+import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import FileExplorer from "./FileExplorer";
 
-const electron = window.require("electron");
-const { ipcRenderer } = electron;
-//const data = fs.readFileSync("test.txt","utf8")
+//const electron = window.require("electron");
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {data: ""}
-  }
-  
-  componentDidMount() {
-		ipcRenderer.on('MESSAGE_FROM_BACKGROUND_VIA_MAIN', (event, args) => {
-      console.log(args)
-      this.setState({data: args})
-		});
-
-		ipcRenderer.send('START_BACKGROUND_VIA_MAIN', {
-			number: 5
-		});
-	}
-
-	render() {
-    
-    return (
-			<div className="App">
-				{this.state.data}
-			</div>
-		);
-	}
+function App() {
+  return (
+    <div className="mx-1">
+      <Container fluid>
+        <Row>
+          <FileExplorer />
+          <Col className="border border-dark" xs={7}></Col>
+          <FileExplorer />
+        </Row>
+      </Container>
+    </div>
+  );
 }
 
 export default App;
-
