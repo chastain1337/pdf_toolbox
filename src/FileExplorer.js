@@ -36,7 +36,7 @@ export default class FileExplorer extends Component {
   };
 
   handleRemoveExplorer = () => {
-    this.props.removeExplorer(this.props.id);
+    this.props.removeExplorer(this.props.explorer_id);
   };
 
   toggleSelected = (target) => {
@@ -76,7 +76,7 @@ export default class FileExplorer extends Component {
     ));
 
     return (
-      <Col className="mx-1 border border-success p-1">
+      <Col className="mx-1 p-1">
         <Table size="sm" striped hover>
           <tbody>
             <tr>
@@ -90,7 +90,7 @@ export default class FileExplorer extends Component {
               </td>
               <td style={{ textAlign: "right" }}>
                 <button onClick={this.handleAddExplorer}>+</button>
-                {this.props.id != 0 ? (
+                {this.props.explorer_id != 0 ? (
                   <button onClick={this.handleRemoveExplorer}>-</button>
                 ) : null}
               </td>

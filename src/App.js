@@ -1,9 +1,9 @@
 import React from "react";
-import { Container, Row } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import FileExplorer from "./FileExplorer";
+import PDFNode from "./PDFNode";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-
 const fs = window.require("fs");
 const prefs = require("./preferences.json");
 
@@ -30,9 +30,9 @@ export default class App extends React.Component {
 
   removeExplorer = (id) => {
     this.setState((prevState) => {
-      const _explorers = prevState.explorers.filter(
-        (explorer) => explorer.props.id != id
-      );
+      const _explorers = prevState.explorers.filter((explorer) => {
+        return explorer.props.explorer_id !== id;
+      });
       return { explorers: _explorers };
     });
   };
@@ -54,8 +54,9 @@ export default class App extends React.Component {
 
   componentDidMount = () => {
     const newExplorers = prefs.fileExplorer.initialPaths.map((path, i) => {
-      if (i != 0) {
+      if (i !== 0) {
         // already mounting the first explorer, regardless of prefs
+        console.log("creating explorer with id explorer-auto-" + i);
         return (
           <FileExplorer
             initialPath={path}
@@ -63,15 +64,18 @@ export default class App extends React.Component {
             removePDFFromViewPort={this.removePDFFromViewPort}
             addPDFToViewPort={this.addPDFToViewPort}
             key={"explorer-auto-" + i}
-            id={Date.now()}
+            explorer_id={"explorer-auto-" + i}
             addExplorer={this.addExplorer}
           />
         );
       }
     });
-    this.setState((prevState) => ({
-      explorers: [...prevState.explorers, ...newExplorers],
-    }));
+    newExplorers.splice(0, 1);
+    this.setState((prevState) => {
+      const combined = [...prevState.explorers, ...newExplorers];
+      console.log(combined);
+      return { explorers: combined };
+    });
   };
 
   state = {
@@ -85,8 +89,8 @@ export default class App extends React.Component {
         removeExplorer={this.removeExplorer}
         removePDFFromViewPort={this.removePDFFromViewPort}
         addPDFToViewPort={this.addPDFToViewPort}
-        key="explorer-0"
-        id={0}
+        key="explorer-auto-0"
+        explorer_id={0} // don't change - used to prevent "-" button from spawning
         addExplorer={this.addExplorer}
       />,
     ],
@@ -95,25 +99,35 @@ export default class App extends React.Component {
 
   render() {
     const listToView = this.state.pdfsToView.map((pdf) => {
-      const fl = fs.readFileSync(pdf.path);
-      // console.log(fl);
       return (
-        <Document key={pdf.id} file={fl}>
-          <Page pageNumber={1} />
-        </Document>
+        <Col key={pdf.id}>
+          <Document
+            className="pdf-viewer"
+            key={pdf.id}
+            file={{ data: fs.readFileSync(pdf.path) }}
+          >
+            <Page pageNumber={1} scale={0.95} />
+          </Document>
+        </Col>
       );
     });
 
     return (
       <div className="mx-1">
         <Container fluid>
-          <Row style={{ minHeight: "50vh" }}>
-            {/* <Document file={process.env.PUBLIC_URL + "sample_pdf_0.pdf"}>
-              <Page pageNumber={1} />
-            </Document> */}
-            {this.state.pdfsToView.length > 0 ? <ul>{listToView}</ul> : null}
+          <Row
+            style={{
+              minHeight: "75vh",
+              overflowY: "scroll",
+              maxHeight: "75vh",
+            }}
+          >
+            {this.state.pdfsToView.length > 0 ? listToView : null}
           </Row>
-          <Row style={{ maxHeight: "50vh", overflowY: "scroll" }}>
+          <Row
+            style={{ maxHeight: "25vh", overflowY: "scroll" }}
+            className="border-top border-black"
+          >
             {this.state.explorers}
           </Row>
         </Container>
