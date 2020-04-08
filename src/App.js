@@ -1,6 +1,10 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import FileExplorer from "./FileExplorer";
+import { Document, Page, pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
+const fs = window.require("fs");
 const prefs = require("./preferences.json");
 
 //const electron = window.require("electron");
@@ -90,14 +94,23 @@ export default class App extends React.Component {
   };
 
   render() {
-    const listToView = this.state.pdfsToView.map((pdf) => (
-      <li key={pdf.id}>{pdf.path}</li>
-    ));
+    const listToView = this.state.pdfsToView.map((pdf) => {
+      const fl = fs.readFileSync(pdf.path);
+      // console.log(fl);
+      return (
+        <Document key={pdf.id} file={fl}>
+          <Page pageNumber={1} />
+        </Document>
+      );
+    });
 
     return (
       <div className="mx-1">
         <Container fluid>
           <Row style={{ minHeight: "50vh" }}>
+            {/* <Document file={process.env.PUBLIC_URL + "sample_pdf_0.pdf"}>
+              <Page pageNumber={1} />
+            </Document> */}
             {this.state.pdfsToView.length > 0 ? <ul>{listToView}</ul> : null}
           </Row>
           <Row style={{ maxHeight: "50vh", overflowY: "scroll" }}>

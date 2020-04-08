@@ -2,7 +2,6 @@ const electron = require("electron");
 const path = require("path");
 const url = require("url");
 
-const { ipcMain } = require("electron");
 const { app } = electron;
 const { BrowserWindow } = electron;
 
@@ -19,6 +18,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
+      webSecurity: false,
     },
   });
 
