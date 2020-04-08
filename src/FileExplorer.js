@@ -1,5 +1,7 @@
 import React, { useState, useEffect, Component } from "react";
 import { Col, Table } from "react-bootstrap";
+import "./App.css"
+
 const fs = window.require("fs");
 const path = window.require("path");
 
@@ -7,6 +9,7 @@ export default class FileExplorer extends Component {
   state = {
     root: "/Users/chastain/pdf_toolbox/sample_pdfs",
     folders: [],
+    selectedRows: []
   };
 
   getFolders = (directory) => {
@@ -34,10 +37,31 @@ export default class FileExplorer extends Component {
   handleRemoveExplorer = () => {
     this.props.removeExplorer(this.props.id)
   }
+
+  toggleSelected = target => {
+    if (target.classList.contains("selected")) {
+      target.classList.remove("selected")
+    } else {
+      target.classList.add("selected")
+    }
+  }
+
+  handleSelectRow = e => {
+    const fullPath = path.join(this.state.root,e.target.innerText)
+    if (e.target.classList.contains("selected")) {
+      this.toggleSelected(e.target)
+      this.props.removePDFFromViewPort(fullPath);
+    } else {
+      this.toggleSelected(e.target)
+      this.props.addPDFToViewPort(fullPath)
+    }
+  
+  }
+
   render() {
     const folderList = this.state.folders.map((folder, i) => (
       <tr key={`rw-${folder}-${i}`}>
-        <td colSpan={2} style={{ fontSize: "9pt" }} key={`cl-${folder}-${i}`}>
+        <td onClick={this.handleSelectRow} colSpan={2} style={{ fontSize: "9pt" }} key={`cl-${folder}-${i}`}>
           {folder}
         </td>
       </tr>
