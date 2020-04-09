@@ -1,11 +1,9 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import FileExplorer from "./FileExplorer";
-//import PDFNode from "./PDFNode";
-import { Worker } from '@phuocng/react-pdf-viewer';
-import Viewer from '@phuocng/react-pdf-viewer';
-import '@phuocng/react-pdf-viewer/cjs/react-pdf-viewer.css';
-
+import PDFNode from "./PDFNode";
+import { Worker } from "@phuocng/react-pdf-viewer";
+import "@phuocng/react-pdf-viewer/cjs/react-pdf-viewer.css";
 
 const prefs = require("./preferences.json");
 
@@ -37,9 +35,12 @@ export default class App extends React.Component {
     });
   };
 
-  addPDFToViewPort = (filePath, id) => {
+  addPDFToViewPort = (filePath, id, shortPath) => {
     this.setState((prevState) => {
-      const _pdfsToView = [...prevState.pdfsToView, { path: filePath, id: id }];
+      const _pdfsToView = [
+        ...prevState.pdfsToView,
+        { path: filePath, id: id, name: shortPath },
+      ];
       return { pdfsToView: _pdfsToView };
     });
   };
@@ -99,37 +100,24 @@ export default class App extends React.Component {
 
   render() {
     const listToView = this.state.pdfsToView.map((pdf) => {
-      return (
-        <Col key={pdf.id}>
-            {/* {https://react-pdf-viewer.dev/docs/options/} */}
-            <Viewer key={pdf.id} fileUrl={"file:" + pdf.path} />
-        </Col>
-      );
+      return <PDFNode pdf={pdf} />;
     });
 
     return (
-      
       <div className="mx-1">
         <Container fluid>
           <Row
             style={{
-              minHeight: "75vh",
-              overflowY: "scroll",
-              maxHeight: "75vh",
+              minHeight: "74vh",
             }}
-          ><Worker workerUrl="https://unpkg.com/pdfjs-dist@2.3.200/build/pdf.worker.min.js">
-            {this.state.pdfsToView.length > 0 ? listToView : null}
+          >
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.3.200/build/pdf.worker.min.js">
+              {this.state.pdfsToView.length > 0 ? listToView : null}
             </Worker>
           </Row>
-          <Row
-            style={{ maxHeight: "25vh", overflowY: "scroll" }}
-            className="border-top border-black"
-          >
-            {this.state.explorers}
-          </Row>
+          <Row className="border-top border-black">{this.state.explorers}</Row>
         </Container>
       </div>
-
     );
   }
 }

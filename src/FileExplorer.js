@@ -13,11 +13,16 @@ export default class FileExplorer extends Component {
   };
 
   getFolders = (directory) => {
-    if (fs.existsSync(directory)) {
-      return fs
-        .readdirSync(directory)
-        .filter((fileName) => fileName.toUpperCase().substr(-4) === ".PDF");
-    } else {
+    try {
+      if (fs.existsSync(directory)) {
+        return fs
+          .readdirSync(directory)
+          .filter((fileName) => fileName.toUpperCase().substr(-4) === ".PDF");
+      } else {
+        return [];
+      }
+    } catch (e) {
+      // i know, i know...
       return [];
     }
   };
@@ -57,7 +62,11 @@ export default class FileExplorer extends Component {
       );
     } else {
       this.toggleSelected(e.target);
-      this.props.addPDFToViewPort(fullPath, `${this.props.explorer_id}-${fullPath}`);
+      this.props.addPDFToViewPort(
+        fullPath,
+        `${this.props.explorer_id}-${fullPath}`,
+        e.target.innerText
+      );
     }
   };
 
@@ -76,7 +85,10 @@ export default class FileExplorer extends Component {
     ));
 
     return (
-      <Col className="mx-1 p-1">
+      <Col
+        className="mx-1 p-1"
+        style={{ overflowY: "scroll", maxHeight: "24vh" }}
+      >
         <Table size="sm" striped hover>
           <tbody>
             <tr>

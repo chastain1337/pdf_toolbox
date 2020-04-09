@@ -1,10 +1,5 @@
 {
-    "fileExplorer": {
-      "initialPaths": [
-        "N:\\Community\\DEV\\From Accounting",
-        "N:\\Community\\DEV\\Need to Post\\Posted\\Scan Check Made\\Dev Finalized (Scan Ck & Pack Slip Joined)",
-        "N:\\Community\\DEV\\Need to Post\\Posted\\Scan Check Made"
-      ]
-    }
+  "fileExplorer": {
+    "initialPaths": ["/Users/chastain/pdf_toolbox/sample_pdfs"]
   }
-  
+}
