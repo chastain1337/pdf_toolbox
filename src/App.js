@@ -1,13 +1,13 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import FileExplorer from "./FileExplorer";
-import PDFNode from "./PDFNode";
-import { Document, Page, pdfjs } from "react-pdf";
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-const fs = window.require("fs");
-const prefs = require("./preferences.json");
+//import PDFNode from "./PDFNode";
+import { Worker } from '@phuocng/react-pdf-viewer';
+import Viewer from '@phuocng/react-pdf-viewer';
+import '@phuocng/react-pdf-viewer/cjs/react-pdf-viewer.css';
 
-//const electron = window.require("electron");
+
+const prefs = require("./preferences.json");
 
 export default class App extends React.Component {
   addExplorer = () => {
@@ -101,18 +101,14 @@ export default class App extends React.Component {
     const listToView = this.state.pdfsToView.map((pdf) => {
       return (
         <Col key={pdf.id}>
-          <Document
-            className="pdf-viewer"
-            key={pdf.id}
-            file={{ data: fs.readFileSync(pdf.path) }}
-          >
-            <Page pageNumber={1} scale={0.95} />
-          </Document>
+            {/* {https://react-pdf-viewer.dev/docs/options/} */}
+            <Viewer key={pdf.id} fileUrl={"file:" + pdf.path} />
         </Col>
       );
     });
 
     return (
+      
       <div className="mx-1">
         <Container fluid>
           <Row
@@ -121,8 +117,9 @@ export default class App extends React.Component {
               overflowY: "scroll",
               maxHeight: "75vh",
             }}
-          >
+          ><Worker workerUrl="https://unpkg.com/pdfjs-dist@2.3.200/build/pdf.worker.min.js">
             {this.state.pdfsToView.length > 0 ? listToView : null}
+            </Worker>
           </Row>
           <Row
             style={{ maxHeight: "25vh", overflowY: "scroll" }}
@@ -132,6 +129,7 @@ export default class App extends React.Component {
           </Row>
         </Container>
       </div>
+
     );
   }
 }

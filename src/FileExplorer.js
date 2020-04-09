@@ -53,11 +53,11 @@ export default class FileExplorer extends Component {
       this.toggleSelected(e.target);
       this.props.removePDFFromViewPort(
         fullPath,
-        `${this.props.id}-${fullPath}`
+        `${this.props.explorer_id}-${fullPath}`
       );
     } else {
       this.toggleSelected(e.target);
-      this.props.addPDFToViewPort(fullPath, `${this.props.id}-${fullPath}`);
+      this.props.addPDFToViewPort(fullPath, `${this.props.explorer_id}-${fullPath}`);
     }
   };
 
