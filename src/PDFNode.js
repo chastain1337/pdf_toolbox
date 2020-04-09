@@ -18,7 +18,7 @@ export default class PDFNode extends React.Component {
             display: "flex",
             flexGrow: 1,
             flexShrink: 1,
-            justifyContent: "center",
+            justifyContent: "left",
           }}
         >
           <div style={{ padding: "0 2px" }}>
@@ -31,6 +31,18 @@ export default class PDFNode extends React.Component {
           <div style={{ padding: "0 2px" }}>{toolbarSlot.zoomOutButton}</div>
           <div style={{ padding: "0 2px" }}>{toolbarSlot.zoomInButton}</div>
           <div style={{ fontSize: "9pt" }}>{this.props.pdf.name}</div>
+          <div style={{ marginLeft: "auto" }}>
+            <button
+              onClick={() =>
+                this.props.removePDFFromViewPort(
+                  this.props.pdf.path,
+                  this.props.pdf.id
+                )
+              }
+            >
+              x
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -51,6 +63,7 @@ export default class PDFNode extends React.Component {
       <Col key={this.props.pdf.id} style={{ maxHeight: "74vh" }}>
         <Viewer
           layout={this.layout}
+          defaultScale={1}
           key={this.props.pdf.id}
           fileUrl={"file:" + this.props.pdf.path}
         />

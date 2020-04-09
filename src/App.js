@@ -100,7 +100,9 @@ export default class App extends React.Component {
 
   render() {
     const listToView = this.state.pdfsToView.map((pdf) => {
-      return <PDFNode pdf={pdf} />;
+      return (
+        <PDFNode pdf={pdf} removePDFFromViewPort={this.removePDFFromViewPort} />
+      );
     });
 
     return (

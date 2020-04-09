@@ -1,3 +1,8 @@
 Add clear all selection button
 Refresh button for folders?
 Set default scale in preferences
+
+Rename pdfs
+Merge pdfs
+Split pages
+Close PDF
