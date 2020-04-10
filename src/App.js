@@ -8,19 +8,33 @@ import "@phuocng/react-pdf-viewer/cjs/react-pdf-viewer.css";
 const prefs = require("./preferences.json");
 
 export default class App extends React.Component {
+  createFileExplorerObject = (
+    initialPath = "",
+    key = `explorer-${Date.now()}`,
+    explorer_id = Date.now()
+  ) => {
+    return {
+      initialPath: initialPath,
+      key: key,
+      explorer_id: explorer_id,
+      removePDFFromViewPort: this.removePDFFromViewPort,
+      addPDFToViewPort: this.addPDFToViewPort,
+      removeExplorer: this.removeExplorer,
+      addExplorer: this.addExplorer,
+      selectedFiles: this.state.pdfsToView.map((pdf) => pdf.name),
+    };
+  };
+
+  state = {
+    explorers: [],
+    pdfsToView: [],
+  };
+
   addExplorer = () => {
     this.setState((prevState) => {
       const _explorers = [
         ...prevState.explorers,
-        <FileExplorer
-          initialPath=""
-          removePDFFromViewPort={this.removePDFFromViewPort}
-          addPDFToViewPort={this.addPDFToViewPort}
-          removeExplorer={this.removeExplorer}
-          key={`explorer-${Date.now()}`}
-          id={Date.now()}
-          addExplorer={this.addExplorer}
-        />,
+        this.createFileExplorerObject(),
       ];
       return { explorers: _explorers };
     });
@@ -29,7 +43,7 @@ export default class App extends React.Component {
   removeExplorer = (id) => {
     this.setState((prevState) => {
       const _explorers = prevState.explorers.filter((explorer) => {
-        return explorer.props.explorer_id !== id;
+        return explorer.explorer_id !== id;
       });
       return { explorers: _explorers };
     });
@@ -45,7 +59,7 @@ export default class App extends React.Component {
     });
   };
 
-  removePDFFromViewPort = (filePath, id) => {
+  removePDFFromViewPort = (id) => {
     this.setState((prevState) => {
       return {
         pdfsToView: [...prevState.pdfsToView].filter((pdf) => pdf.id != id),
@@ -55,53 +69,36 @@ export default class App extends React.Component {
 
   componentDidMount = () => {
     const newExplorers = prefs.fileExplorer.initialPaths.map((path, i) => {
-      if (i !== 0) {
-        // already mounting the first explorer, regardless of prefs
-        console.log("creating explorer with id explorer-auto-" + i);
-        return (
-          <FileExplorer
-            initialPath={path}
-            removeExplorer={this.removeExplorer}
-            removePDFFromViewPort={this.removePDFFromViewPort}
-            addPDFToViewPort={this.addPDFToViewPort}
-            key={"explorer-auto-" + i}
-            explorer_id={"explorer-auto-" + i}
-            addExplorer={this.addExplorer}
-          />
-        );
-      }
+      // set id of index 0 to 0, used later
+      return this.createFileExplorerObject(
+        path,
+        "explorer-auto-" + i,
+        i !== 0 ? "explorer-auto-" + i : 0
+      );
     });
-    newExplorers.splice(0, 1);
-    this.setState((prevState) => {
-      const combined = [...prevState.explorers, ...newExplorers];
-      console.log(combined);
-      return { explorers: combined };
-    });
-  };
-
-  state = {
-    explorers: [
-      <FileExplorer
-        initialPath={
-          prefs.fileExplorer.initialPaths[0]
-            ? prefs.fileExplorer.initialPaths[0]
-            : null
-        }
-        removeExplorer={this.removeExplorer}
-        removePDFFromViewPort={this.removePDFFromViewPort}
-        addPDFToViewPort={this.addPDFToViewPort}
-        key="explorer-auto-0"
-        explorer_id={0} // don't change - used to prevent "-" button from spawning
-        addExplorer={this.addExplorer}
-      />,
-    ],
-    pdfsToView: [],
+    this.setState({ explorers: newExplorers });
   };
 
   render() {
+    const explorers = this.state.explorers.map((explorer) => (
+      <FileExplorer
+        initialPath={explorer.initialPath}
+        key={explorer.key}
+        explorer_id={explorer.explorer_id}
+        removePDFFromViewPort={explorer.removePDFFromViewPort}
+        addPDFToViewPort={explorer.addPDFToViewPort}
+        removeExplorer={explorer.removeExplorer}
+        addExplorer={explorer.addExplorer}
+        selectedFiles={explorer.selectedFiles}
+      />
+    ));
     const listToView = this.state.pdfsToView.map((pdf) => {
       return (
-        <PDFNode pdf={pdf} removePDFFromViewPort={this.removePDFFromViewPort} />
+        <PDFNode
+          key={pdf.id}
+          pdf={pdf}
+          removePDFFromViewPort={this.removePDFFromViewPort}
+        />
       );
     });
 
@@ -117,7 +114,7 @@ export default class App extends React.Component {
               {this.state.pdfsToView.length > 0 ? listToView : null}
             </Worker>
           </Row>
-          <Row className="border-top border-black">{this.state.explorers}</Row>
+          <Row className="border-top border-black">{explorers}</Row>
         </Container>
       </div>
     );

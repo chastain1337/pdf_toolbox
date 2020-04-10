@@ -6,11 +6,14 @@ const fs = window.require("fs");
 const path = window.require("path");
 
 export default class FileExplorer extends Component {
-  state = {
-    root: this.props.initialPath,
-    folders: [],
-    selectedRows: [],
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      root: this.props.initialPath,
+      folders: [],
+    };
+  }
 
   getFolders = (directory) => {
     try {
@@ -55,13 +58,8 @@ export default class FileExplorer extends Component {
   handleSelectRow = (e) => {
     const fullPath = path.join(this.state.root, e.target.innerText);
     if (e.target.classList.contains("selected")) {
-      this.toggleSelected(e.target);
-      this.props.removePDFFromViewPort(
-        fullPath,
-        `${this.props.explorer_id}-${fullPath}`
-      );
+      this.props.removePDFFromViewPort(`${this.props.explorer_id}-${fullPath}`);
     } else {
-      this.toggleSelected(e.target);
       this.props.addPDFToViewPort(
         fullPath,
         `${this.props.explorer_id}-${fullPath}`,
@@ -71,9 +69,13 @@ export default class FileExplorer extends Component {
   };
 
   render() {
+    console.log("FE render", this.props.selectedFiles);
     const folderList = this.state.folders.map((folder, i) => (
       <tr key={`rw-${folder}-${i}`}>
         <td
+          className={
+            this.props.selectedFiles.includes(folder) ? "selected" : null
+          }
           onClick={this.handleSelectRow}
           colSpan={2}
           style={{ fontSize: "9pt" }}
