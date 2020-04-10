@@ -74,22 +74,41 @@ export default class FileExplorer extends Component {
   };
 
   render() {
-    const folderList = this.state.folders.map((folder, i) => (
-      <tr key={`rw-${folder}-${i}`}>
+    const folderList = this.state.folders.map((folder, i) => {
+      const pdfID = this.props.explorer_id + "-" + path.join(this.state.root, folder)
+      const folderIsSelected = this.props.selectedPDFIds.includes(pdfID)
+      const folderIsMinimized = folderIsSelected ? this.props.minimizedPDFIds.includes(pdfID) : false
+      return (
+      <tr key={`rw-${folder}-${i}`} style={{ fontSize: "9pt" }}>
         <td
-          className={
-            this.props.selectedFiles.includes(folder) ? "selected" : null
-          }
+          className={folderIsSelected ? "selected" : null}
           onAuxClick={this.handleRightClick}
           onClick={this.handleLeftClick}
-          colSpan={2}
-          style={{ fontSize: "9pt" }}
+          colSpan={folderIsMinimized ? 1 : 2}
           key={`cl-${folder}-${i}`}
         >
           {folder}
         </td>
+        { folderIsMinimized ?
+          (<td>
+            <button onClick={() => this.props.togglePDFMinimization(pdfID, false)}>
+              +
+            </button>
+              <button
+                onClick={() =>
+                  this.props.removePDFFromViewPort(
+                    pdfID,
+                  )
+                }
+              >
+                x
+              </button>
+          </td>)
+          :
+          (null)
+        }
       </tr>
-    ));
+    )});
 
     return (
       <Col

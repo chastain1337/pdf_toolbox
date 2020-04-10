@@ -22,10 +22,6 @@ export default class App extends React.Component {
       initialPath: initialPath,
       key: key,
       explorer_id: explorer_id,
-      removePDFFromViewPort: this.removePDFFromViewPort,
-      addPDFToViewPort: this.addPDFToViewPort,
-      removeExplorer: this.removeExplorer,
-      addExplorer: this.addExplorer,
     };
   };
 
@@ -82,9 +78,11 @@ export default class App extends React.Component {
     this.setState((prevState) => {
       const _pdfsToView = prevState.pdfsToView.map((pdf) => {
         if (pdf.id == id) {
-          minimize ? (pdf.minimized = true) : (pdf.minimized = false);
+          pdf.minimized = minimize;
         }
+        return pdf
       });
+      return {pdfsToView: _pdfsToView}
     });
   };
 
@@ -94,11 +92,17 @@ export default class App extends React.Component {
         initialPath={explorer.initialPath}
         key={explorer.key}
         explorer_id={explorer.explorer_id}
-        removePDFFromViewPort={explorer.removePDFFromViewPort}
-        addPDFToViewPort={explorer.addPDFToViewPort}
-        removeExplorer={explorer.removeExplorer}
-        addExplorer={explorer.addExplorer}
-        selectedFiles={this.state.pdfsToView.map((pdf) => pdf.name)}
+        
+        // functions
+        removePDFFromViewPort={this.removePDFFromViewPort}
+        addPDFToViewPort={this.addPDFToViewPort}
+        removeExplorer={this.removeExplorer}
+        addExplorer={this.addExplorer}
+        togglePDFMinimization={this.togglePDFMinimization}
+        
+        // props based on state
+        selectedPDFIds={this.state.pdfsToView.map ( pdf => pdf.id)}
+        minimizedPDFIds={this.state.pdfsToView.filter( pdf => pdf.minimized).map(pdf => pdf.id)}
       />
     ));
     const listToView = this.state.pdfsToView.map((pdf) => {
