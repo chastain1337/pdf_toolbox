@@ -21,7 +21,6 @@ export default class App extends React.Component {
       addPDFToViewPort: this.addPDFToViewPort,
       removeExplorer: this.removeExplorer,
       addExplorer: this.addExplorer,
-      selectedFiles: this.state.pdfsToView.map((pdf) => pdf.name),
     };
   };
 
@@ -89,7 +88,7 @@ export default class App extends React.Component {
         addPDFToViewPort={explorer.addPDFToViewPort}
         removeExplorer={explorer.removeExplorer}
         addExplorer={explorer.addExplorer}
-        selectedFiles={explorer.selectedFiles}
+        selectedFiles={this.state.pdfsToView.map((pdf) => pdf.name)}
       />
     ));
     const listToView = this.state.pdfsToView.map((pdf) => {

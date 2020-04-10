@@ -34,10 +34,7 @@ export default class PDFNode extends React.Component {
           <div style={{ marginLeft: "auto" }}>
             <button
               onClick={() =>
-                this.props.removePDFFromViewPort(
-                  this.props.pdf.path,
-                  this.props.pdf.id
-                )
+                this.props.removePDFFromViewPort(this.props.pdf.id)
               }
             >
               x

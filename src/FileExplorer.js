@@ -69,7 +69,6 @@ export default class FileExplorer extends Component {
   };
 
   render() {
-    console.log("FE render", this.props.selectedFiles);
     const folderList = this.state.folders.map((folder, i) => (
       <tr key={`rw-${folder}-${i}`}>
         <td
