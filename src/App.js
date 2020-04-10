@@ -8,6 +8,11 @@ import "@phuocng/react-pdf-viewer/cjs/react-pdf-viewer.css";
 const prefs = require("./preferences.json");
 
 export default class App extends React.Component {
+  state = {
+    explorers: [],
+    pdfsToView: [],
+  };
+
   createFileExplorerObject = (
     initialPath = "",
     key = `explorer-${Date.now()}`,
@@ -22,11 +27,6 @@ export default class App extends React.Component {
       removeExplorer: this.removeExplorer,
       addExplorer: this.addExplorer,
     };
-  };
-
-  state = {
-    explorers: [],
-    pdfsToView: [],
   };
 
   addExplorer = () => {
@@ -48,11 +48,11 @@ export default class App extends React.Component {
     });
   };
 
-  addPDFToViewPort = (filePath, id, shortPath) => {
+  addPDFToViewPort = (filePath, id, shortPath, minimized = false) => {
     this.setState((prevState) => {
       const _pdfsToView = [
         ...prevState.pdfsToView,
-        { path: filePath, id: id, name: shortPath },
+        { path: filePath, id: id, name: shortPath, minimized },
       ];
       return { pdfsToView: _pdfsToView };
     });
@@ -78,6 +78,16 @@ export default class App extends React.Component {
     this.setState({ explorers: newExplorers });
   };
 
+  togglePDFMinimization = (id, minimize) => {
+    this.setState((prevState) => {
+      const _pdfsToView = prevState.pdfsToView.map((pdf) => {
+        if (pdf.id == id) {
+          minimize ? (pdf.minimized = true) : (pdf.minimized = false);
+        }
+      });
+    });
+  };
+
   render() {
     const explorers = this.state.explorers.map((explorer) => (
       <FileExplorer
@@ -97,6 +107,7 @@ export default class App extends React.Component {
           key={pdf.id}
           pdf={pdf}
           removePDFFromViewPort={this.removePDFFromViewPort}
+          togglePDFMinimization={this.togglePDFMinimization}
         />
       );
     });

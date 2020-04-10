@@ -32,6 +32,9 @@ export default class PDFNode extends React.Component {
           <div style={{ padding: "0 2px" }}>{toolbarSlot.zoomInButton}</div>
           <div style={{ fontSize: "9pt" }}>{this.props.pdf.name}</div>
           <div style={{ marginLeft: "auto" }}>
+            <button onClick={this.handleMinimize}>
+              {this.props.pdf.minimized ? "+" : "-"}
+            </button>
             <button
               onClick={() =>
                 this.props.removePDFFromViewPort(this.props.pdf.id)
@@ -45,6 +48,11 @@ export default class PDFNode extends React.Component {
     );
   };
 
+  handleMinimize = (e) => {
+    console.log("calling handleMinimize");
+    this.props.togglePDFMinimization(this.props.pdf.id,!this.props.);
+  };
+
   layout = (isSidebarOpened, container, main, toolbar, sidebar) => {
     return defaultLayout(
       isSidebarOpened,
@@ -56,7 +64,23 @@ export default class PDFNode extends React.Component {
   };
 
   render() {
-    return (
+    return this.props.pdf.minimized ? (
+      <div className="border border-black mr-1" style={{ fontSize: "8pt" }}>
+        <button onClick={this.handleMinimize}>
+          {this.props.pdf.minimized ? "+" : "-"}
+        </button>
+        <button
+          onClick={() =>
+            this.props.removePDFFromViewPort(
+              this.props.pdf.id,
+              !this.props.minimized
+            )
+          }
+        >
+          x
+        </button>
+      </div>
+    ) : (
       <Col key={this.props.pdf.id} style={{ maxHeight: "74vh" }}>
         <Viewer
           layout={this.layout}

@@ -55,7 +55,12 @@ export default class FileExplorer extends Component {
     }
   };
 
-  handleSelectRow = (e) => {
+  handleRightClick = (e) => {
+    // Select without display?
+  };
+
+  handleLeftClick = (e) => {
+    // Selects with display
     const fullPath = path.join(this.state.root, e.target.innerText);
     if (e.target.classList.contains("selected")) {
       this.props.removePDFFromViewPort(`${this.props.explorer_id}-${fullPath}`);
@@ -75,7 +80,8 @@ export default class FileExplorer extends Component {
           className={
             this.props.selectedFiles.includes(folder) ? "selected" : null
           }
-          onClick={this.handleSelectRow}
+          onAuxClick={this.handleRightClick}
+          onClick={this.handleLeftClick}
           colSpan={2}
           style={{ fontSize: "9pt" }}
           key={`cl-${folder}-${i}`}
@@ -95,7 +101,7 @@ export default class FileExplorer extends Component {
             <tr>
               <td>
                 <input
-                  style={{ width: "100%" }}
+                  style={{ width: "100%", fontSize: "9pt" }}
                   placeholder="Path"
                   onChange={this.handleRootChange}
                   value={this.state.root}
