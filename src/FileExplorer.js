@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component } from "react";
+import React, { Component } from "react";
 import { Col, Table } from "react-bootstrap";
 import "./App.css";
 
@@ -56,7 +56,18 @@ export default class FileExplorer extends Component {
   };
 
   handleRightClick = (e) => {
-    // Select without display?
+    // If not selected -> select and minimize
+    // If selected -> just minimize
+    // If minimized -> expand
+    const pdfID = this.props.explorer_id + "-" + path.join(this.state.root, e.target.innerText)
+    if (!this.props.selectedPDFIds.includes(pdfID)) {
+      this.handleLeftClick(e);
+    }
+    if (this.props.minimizedPDFIds.includes(pdfID)) {
+      this.props.togglePDFMinimization(pdfID,false);    
+    } else {
+      this.props.togglePDFMinimization(pdfID,true);    
+    }
   };
 
   handleLeftClick = (e) => {
@@ -113,7 +124,7 @@ export default class FileExplorer extends Component {
     return (
       <Col
         className="mx-1 p-1"
-        style={{ overflowY: "scroll", maxHeight: "24vh" }}
+        style={{ overflowY: "scroll", maxHeight: "22vh" }}
       >
         <Table size="sm" striped hover>
           <tbody>
@@ -128,7 +139,7 @@ export default class FileExplorer extends Component {
               </td>
               <td style={{ textAlign: "right" }}>
                 <button onClick={this.handleAddExplorer}>+</button>
-                {this.props.explorer_id != 0 ? (
+                {this.props.explorer_id !== 0 ? (
                   <button onClick={this.handleRemoveExplorer}>-</button>
                 ) : null}
               </td>

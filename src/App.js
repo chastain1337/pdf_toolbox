@@ -1,9 +1,10 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, } from "react-bootstrap";
 import FileExplorer from "./FileExplorer";
 import PDFNode from "./PDFNode";
 import { Worker } from "@phuocng/react-pdf-viewer";
 import "@phuocng/react-pdf-viewer/cjs/react-pdf-viewer.css";
+import Toolbar from "./Toolbar";
 
 const prefs = require("./preferences.json");
 
@@ -57,7 +58,7 @@ export default class App extends React.Component {
   removePDFFromViewPort = (id) => {
     this.setState((prevState) => {
       return {
-        pdfsToView: [...prevState.pdfsToView].filter((pdf) => pdf.id != id),
+        pdfsToView: [...prevState.pdfsToView].filter((pdf) => pdf.id !== id),
       };
     });
   };
@@ -77,7 +78,7 @@ export default class App extends React.Component {
   togglePDFMinimization = (id, minimize) => {
     this.setState((prevState) => {
       const _pdfsToView = prevState.pdfsToView.map((pdf) => {
-        if (pdf.id == id) {
+        if (pdf.id === id) {
           pdf.minimized = minimize;
         }
         return pdf
@@ -128,7 +129,8 @@ export default class App extends React.Component {
               {this.state.pdfsToView.length > 0 ? listToView : null}
             </Worker>
           </Row>
-          <Row className="border-top border-black">{explorers}</Row>
+          <Toolbar className="border-top border-black" numberSelected={this.state.pdfsToView.length}/>
+          <Row >{explorers}</Row>
         </Container>
       </div>
     );

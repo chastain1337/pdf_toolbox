@@ -49,7 +49,7 @@ export default class PDFNode extends React.Component {
   };
 
   handleMinimize = (e) => {
-    this.props.togglePDFMinimization(this.props.pdf.id,!this.props.pdf.minimized);
+    this.props.togglePDFMinimization(this.props.pdf.id,!this.props.pdf.minimized);    
   };
 
   layout = (isSidebarOpened, container, main, toolbar, sidebar) => {
@@ -64,22 +64,9 @@ export default class PDFNode extends React.Component {
 
   render() {
     return this.props.pdf.minimized ? (
-      <div className="border border-black mr-1" style={{ fontSize: "8pt" }}>
-        <button onClick={this.handleMinimize}>
-          {this.props.pdf.minimized ? "+" : "-"}
-        </button>
-        <button
-          onClick={() =>
-            this.props.removePDFFromViewPort(
-              this.props.pdf.id,
-            )
-          }
-        >
-          x
-        </button>
-      </div>
+      null
     ) : (
-      <Col key={this.props.pdf.id} style={{ maxHeight: "74vh" }}>
+      <Col key={this.props.pdf.id} style={{ maxHeight: "73vh" }}>
         <Viewer
           layout={this.layout}
           defaultScale={1}

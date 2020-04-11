@@ -2,5 +2,6 @@
 {
   "fileExplorer": {
     "initialPaths": ["/Users/chastain/pdf_toolbox/sample_pdfs"]
-  }
+  },
+  "archiveFolder": "/Users/chastain/pdf_toolbox/sample_pdfs/archived"
 }
