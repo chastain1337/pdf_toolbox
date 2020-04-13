@@ -1,18 +1,25 @@
 import React from "react";
-import { Container, Row, } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import FileExplorer from "./FileExplorer";
 import PDFNode from "./PDFNode";
 import { Worker } from "@phuocng/react-pdf-viewer";
 import "@phuocng/react-pdf-viewer/cjs/react-pdf-viewer.css";
 import Toolbar from "./Toolbar";
+import { channels } from "../shared/constants";
 
+const { ipcRenderer } = window;
 const prefs = require("./preferences.json");
 
 export default class App extends React.Component {
-  state = {
-    explorers: [],
-    pdfsToView: [],
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      explorers: [],
+      pdfsToView: [],
+      appName: "",
+      appVersion: "",
+    };
+  }
 
   createFileExplorerObject = (
     initialPath = "",
@@ -73,6 +80,12 @@ export default class App extends React.Component {
       );
     });
     this.setState({ explorers: newExplorers });
+    ipcRenderer.send(channels.APP_INFO);
+    ipcRenderer.on(channels.APP_INFO, (event, arg) => {
+      ipcRenderer.removeAllListeners(channels.APP_INFO);
+      const { appName, appVersion } = arg;
+      this.setState({ appName, appVersion });
+    });
   };
 
   togglePDFMinimization = (id, minimize) => {
@@ -81,29 +94,30 @@ export default class App extends React.Component {
         if (pdf.id === id) {
           pdf.minimized = minimize;
         }
-        return pdf
+        return pdf;
       });
-      return {pdfsToView: _pdfsToView}
+      return { pdfsToView: _pdfsToView };
     });
   };
 
   render() {
+    console.log(this.state.appName, this.state.appVersion);
     const explorers = this.state.explorers.map((explorer) => (
       <FileExplorer
         initialPath={explorer.initialPath}
         key={explorer.key}
         explorer_id={explorer.explorer_id}
-        
         // functions
         removePDFFromViewPort={this.removePDFFromViewPort}
         addPDFToViewPort={this.addPDFToViewPort}
         removeExplorer={this.removeExplorer}
         addExplorer={this.addExplorer}
         togglePDFMinimization={this.togglePDFMinimization}
-        
         // props based on state
-        selectedPDFIds={this.state.pdfsToView.map ( pdf => pdf.id)}
-        minimizedPDFIds={this.state.pdfsToView.filter( pdf => pdf.minimized).map(pdf => pdf.id)}
+        selectedPDFIds={this.state.pdfsToView.map((pdf) => pdf.id)}
+        minimizedPDFIds={this.state.pdfsToView
+          .filter((pdf) => pdf.minimized)
+          .map((pdf) => pdf.id)}
       />
     ));
     const listToView = this.state.pdfsToView.map((pdf) => {
@@ -129,8 +143,11 @@ export default class App extends React.Component {
               {this.state.pdfsToView.length > 0 ? listToView : null}
             </Worker>
           </Row>
-          <Toolbar className="border-top border-black" numberSelected={this.state.pdfsToView.length}/>
-          <Row >{explorers}</Row>
+          <Toolbar
+            className="border-top border-black"
+            numberSelected={this.state.pdfsToView.length}
+          />
+          <Row>{explorers}</Row>
         </Container>
       </div>
     );

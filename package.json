@@ -1,5 +1,7 @@
 {
-  "name": "pdf_toolkit",
+  "name": "pdf_toolbox2",
+  "productName": "PDF Toolbox",
+  "main": "electron/main.js",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -7,26 +9,22 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "bootstrap": "^4.4.1",
-    "pdfjs": "^2.3.5",
-    "pdfjs-dist": "^2.3.200",
-    "pdfkit": "^0.11.0",
     "react": "^16.13.1",
-    "react-bootstrap": "^1.0.0",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "react-bootstrap": "^1.0.0",
+    "bootstrap": "^4.4.1",
+    "python-shell": "^1.0.8"
   },
   "scripts": {
-    "react-start": "cross-env BROWSER=NONE react-scripts start",
-    "electron-start": "cross-env DEV=1 electron .",
-    "start": "concurrently 'npm run react-start' 'wait-on http://localhost:3000/ && npm run electron-start'",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
+    "start": "cross-env BROWSER=none react-scripts start",
+    "start-electron": "cross-env ELECTRON_START_URL=http://localhost:3000 electron .",
+    "build-electron": "mkdir build/src & robocopy electron build/electron /S & robocopy src/shared build/src/shared /S",
+    "package": "electron-builder build --win -c.extraMetadata.main=build/electron/main.js --publish never",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "main": "public/electron.js",
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -43,19 +41,21 @@
     ]
   },
   "devDependencies": {
-    "concurrently": "^5.1.0",
     "cross-env": "^7.0.2",
     "electron": "^8.2.1",
     "electron-builder": "^22.4.1",
-    "python-shell": "^1.0.8",
-    "wait-on": "^4.0.1"
+    "python-shell": "^1.0.8"
   },
+  "homepage": "./",
   "build": {
-    "appId": "PDFToolkit",
-    "win": {
-      "target": "NSIS",
-      "icon": "build/icon.ico"
-    },
-    "extends": null
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "publish": {
+      "provider": "github",
+      "repo": "pdf_toolbox",
+      "owner": "chastain1337"
+    }
   }
 }
