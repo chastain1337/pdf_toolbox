@@ -1,8 +1,9 @@
 Add clear all selection button
 Refresh button for folders?
 Set default scale in preferences
+Set preferences without editing json file (treat that file as mini-database)
 
 Rename pdfs
+    - Currently limited to only 1, launch "rename wizard" for multiples eventually
 Merge pdfs
 Split pages
-Close PDF
