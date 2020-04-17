@@ -13,14 +13,13 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
     "react-bootstrap": "^1.0.0",
-    "bootstrap": "^4.4.1",
-    "python-shell": "^1.0.8"
+    "bootstrap": "^4.4.1"
   },
   "scripts": {
     "start": "cross-env BROWSER=none react-scripts start",
     "start-electron": "cross-env ELECTRON_START_URL=http://localhost:3000 electron .",
-    "build-electron": "mkdir build/src & robocopy electron build/electron /S & robocopy src/shared build/src/shared /S",
-    "package": "electron-builder build --win -c.extraMetadata.main=build/electron/main.js --publish never",
+    "build-electron": "mkdir build/src && cp -r electron/. build/electron && cp -r src/shared/. build/src/shared",
+    "package": "electron-builder build --mac -c.extraMetadata.main=build/electron/main.js --publish never",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -43,8 +42,7 @@
   "devDependencies": {
     "cross-env": "^7.0.2",
     "electron": "^8.2.1",
-    "electron-builder": "^22.4.1",
-    "python-shell": "^1.0.8"
+    "electron-builder": "^22.4.1"
   },
   "homepage": "./",
   "build": {

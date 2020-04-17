@@ -1,27 +1,9 @@
 import React from "react";
 import { Row, Col, Button } from "react-bootstrap";
 
-const { PythonShell } = window.require("python-shell");
-
 export default class Toolbar extends React.Component {
   handleRenameClick = (e) => {
-    const options = {
-      mode: "text",
-      pythonPath:
-        "C:\\Users\\James\\AppData\\Local\\Programs\\Python\\Python37-32\\python.exe",
-      pythonOptions: ["-u"],
-      scriptPath: "C:\\Users\\James\\pdf_toolbox\\src\\scripts",
-      args: [e.target.innerText],
-    };
-
-    PythonShell.run("main.py", options, (err, data) => {
-      console.log("Callback firing");
-      if (err) {
-        console.log(err);
-      } else {
-        window.alert(data);
-      }
-    });
+    console.log(e.target.innerText);
   };
 
   handleSplitClick = (e) => {
