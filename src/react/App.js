@@ -8,7 +8,7 @@ import Toolbar from "./Toolbar";
 import { channels } from "../shared/constants";
 
 const { ipcRenderer } = window;
-const prefs = require("./preferences.json");
+const prefs = require("./preferences2.json");
 
 export default class App extends React.Component {
   constructor(props) {
@@ -146,6 +146,7 @@ export default class App extends React.Component {
           <Toolbar
             className="border-top border-black"
             numberSelected={this.state.pdfsToView.length}
+            selectedPDFPaths={this.state.pdfsToView.map((pdf) => pdf.path)}
           />
           <Row>{explorers}</Row>
         </Container>
