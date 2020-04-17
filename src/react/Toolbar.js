@@ -5,39 +5,25 @@ const fs = window.require("fs");
 
 export default class Toolbar extends React.Component {
   state = {
-    buttonsToRender: [
-      {
-        buttonTitle: "Rename",
-        enableOn: "EXACTLY_1",
-        onClick: this.handleRenameClick,
-      },
-      {
-        buttonTitle: "Split",
-        onClick: this.handleSplitClick,
-        enableOn: "EXACTLY_1",
-      },
-      {
-        buttonTitle: "Merge",
-        onClick: this.handleMergeClick,
-        enableOn: "MORE_THAN_1",
-      },
-      {
-        buttonTitle: "Archive",
-        onClick: this.handleArchiveClick,
-        enableOn: "AT_LEAST_1",
-      },
-      {
-        buttonTitle: "Parse",
-        onClick: this.handleParseClick,
-        enableOn: false,
-      },
-    ],
+    buttonsToRender: [],
+    tools: [{ id: "rename", name: "File Renamer", display: false }],
+  };
+
+  enableTools = (toolIDs) => {
+    this.setState((prevState) => {
+      const _tools = prevState.tools.map((tool) => {
+        if (toolIDs.includes(tool.id)) {
+          tool.display = true;
+        }
+        return tool;
+      });
+      return { tools: _tools };
+    });
   };
 
   handleRenameClick = (e) => {
-    console.log("reaming " + this.props.selectedPDFPaths[0]);
-    const newName = window.prompt("Enter new name: ");
-    fs.rename(this.props.selectedPDFPaths[0], newName);
+    console.log("clicked rename");
+    this.enableTools(["rename"]);
   };
 
   handleSplitClick = (e) => {
@@ -57,37 +43,60 @@ export default class Toolbar extends React.Component {
   };
 
   render() {
-    console.log(this.props.numberSelected);
-    const toolbarButtons = this.state.buttonsToRender.map((button) => {
-      let enabled;
-      switch (button.enableOn) {
-        case "MORE_THAN_1":
-          enabled = this.props.numberSelected > 1;
-          break;
-        case "EXACTLY_1":
-          enabled = this.props.numberSelected === 1;
-          break;
-        case "AT_LEAST_1":
-          enabled = this.props.numberSelected >= 1;
-          break;
-        default:
-          enabled = false;
-      }
+    const buttons = [
+      {
+        buttonTitle: "Rename",
+        display: true,
+        callback: this.handleRenameClick,
+        disabled: this.props.numberSelected !== 1,
+      },
+      {
+        buttonTitle: "Split",
+        callback: this.handleSplitClick,
+        display: true,
+        disabled: this.props.numberSelected !== 1,
+      },
+      {
+        buttonTitle: "Merge",
+        callback: this.handleMergeClick,
+        display: true,
+        disabled: this.props.numberSelected < 2,
+      },
+      {
+        buttonTitle: "Archive",
+        callback: this.handleArchiveClick,
+        display: true,
+        disabled: this.props.numberSelected < 1,
+      },
+      {
+        buttonTitle: "Parse",
+        callback: this.handleParseClick,
+        display: true,
+        disabled: true,
+      },
+    ];
+
+    const toolbarButtons = buttons.map((button) => {
       return (
         <Col key={`col-${button.buttonTitle}`}>
           <Button
-            onClick={button.onClick}
+            onClick={button.callback}
             key={button.buttonTitle}
             variant="secondary"
             block
             size="sm"
-            disabled={!enabled}
+            disabled={button.disabled}
           >
             {button.buttonTitle}
           </Button>
         </Col>
       );
     });
+    console.log(this.state.tools);
+    const toolsToShow = this.state.tools
+      .filter((tool) => tool.display)
+      .map((tool) => <Col>{tool.name}</Col>);
+
     return (
       <Row className="text-center">
         <Col
@@ -102,6 +111,7 @@ export default class Toolbar extends React.Component {
           {`${this.props.numberSelected} selected`}
         </Col>
         {toolbarButtons}
+        {toolsToShow}
       </Row>
     );
   }
