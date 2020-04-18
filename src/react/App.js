@@ -114,7 +114,6 @@ export default class App extends React.Component {
   };
 
   render() {
-    console.log(this.state.appName, this.state.appVersion);
     const explorers = this.state.explorers.map((explorer) => (
       <FileExplorer
         disabled={explorer.disabled}

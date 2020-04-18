@@ -27,22 +27,6 @@ export default class Toolbar extends React.Component {
     });
   };
 
-  // toggleButtons = (buttonNames, toggle) => {
-  //   this.setState((prevState) => {
-  //     if (toggle) {
-  //       // Add it to the display list
-  //       return {
-  //         buttonsToDisplay: [...prevState.buttonsToDisplay, ...buttonNames],
-  //       };
-  //     } else {
-  //       // Remove them from the list
-  //       const _buttonsToDisplay = [...prevState.buttonsToDisplay];
-  //       _buttonsToDisplay.filter((name) => !buttonNames.includes(name));
-  //       return { buttonsToDisplay: _buttonsToDisplay };
-  //     }
-  //   });
-  // };
-
   handleRenameClick = (e) => {
     this.toggleTools(["rename"], true);
     this.setState(

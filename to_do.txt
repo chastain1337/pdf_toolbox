@@ -7,8 +7,13 @@ Rename pdfs
     - Currently limited to only 1, launch "rename wizard" for multiples eventually
 Merge pdfs
 Split pages
+    - open "split pages" wizard
+                                    | [rename orignal file?]
+        from page __ to page __     | [filename]
+        from page __ to page __     | [filename]... [+] [-] ...etc
 
-/Users/chastain/Google Drive
+
+
 
 mac:
 "build-electron": "mkdir build/src && cp -r electron/. build/electron && cp -r src/shared/. build/src/shared"
