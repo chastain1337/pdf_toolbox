@@ -59,14 +59,17 @@ export default class FileExplorer extends Component {
     // If not selected -> select and minimize
     // If selected -> just minimize
     // If minimized -> expand
-    const pdfID = this.props.explorer_id + "-" + path.join(this.state.root, e.target.innerText)
+    const pdfID =
+      this.props.explorer_id +
+      "-" +
+      path.join(this.state.root, e.target.innerText);
     if (!this.props.selectedPDFIds.includes(pdfID)) {
       this.handleLeftClick(e);
     }
     if (this.props.minimizedPDFIds.includes(pdfID)) {
-      this.props.togglePDFMinimization(pdfID,false);    
+      this.props.togglePDFMinimization(pdfID, false);
     } else {
-      this.props.togglePDFMinimization(pdfID,true);    
+      this.props.togglePDFMinimization(pdfID, true);
     }
   };
 
@@ -86,40 +89,42 @@ export default class FileExplorer extends Component {
 
   render() {
     const folderList = this.state.folders.map((folder, i) => {
-      const pdfID = this.props.explorer_id + "-" + path.join(this.state.root, folder)
-      const folderIsSelected = this.props.selectedPDFIds.includes(pdfID)
-      const folderIsMinimized = folderIsSelected ? this.props.minimizedPDFIds.includes(pdfID) : false
+      const pdfID =
+        this.props.explorer_id + "-" + path.join(this.state.root, folder);
+      const folderIsSelected = this.props.selectedPDFIds.includes(pdfID);
+      const folderIsMinimized = folderIsSelected
+        ? this.props.minimizedPDFIds.includes(pdfID)
+        : false;
       return (
-      <tr key={`rw-${folder}-${i}`} style={{ fontSize: "9pt" }}>
-        <td
-          className={folderIsSelected ? "selected" : null}
-          onAuxClick={this.handleRightClick}
-          onClick={this.handleLeftClick}
-          colSpan={folderIsMinimized ? 1 : 2}
-          key={`cl-${folder}-${i}`}
-        >
-          {folder}
-        </td>
-        { folderIsMinimized ?
-          (<td>
-            <button onClick={() => this.props.togglePDFMinimization(pdfID, false)}>
-              +
-            </button>
+        <tr key={`rw-${folder}-${i}`} style={{ fontSize: "9pt" }}>
+          <td
+            className={folderIsSelected ? "selected" : null}
+            onAuxClick={this.props.disabled ? null : this.handleRightClick}
+            onClick={this.props.disabled ? null : this.handleLeftClick}
+            colSpan={folderIsMinimized ? 1 : 2}
+            key={`cl-${folder}-${i}`}
+          >
+            {folder}
+          </td>
+          {folderIsMinimized ? (
+            <td>
               <button
-                onClick={() =>
-                  this.props.removePDFFromViewPort(
-                    pdfID,
-                  )
-                }
+                disabled={this.props.disabled}
+                onClick={() => this.props.togglePDFMinimization(pdfID, false)}
+              >
+                +
+              </button>
+              <button
+                disabled={this.props.disabled}
+                onClick={() => this.props.removePDFFromViewPort(pdfID)}
               >
                 x
               </button>
-          </td>)
-          :
-          (null)
-        }
-      </tr>
-    )});
+            </td>
+          ) : null}
+        </tr>
+      );
+    });
 
     return (
       <Col
@@ -131,6 +136,7 @@ export default class FileExplorer extends Component {
             <tr>
               <td>
                 <input
+                  disabled={this.props.disabled}
                   style={{ width: "100%", fontSize: "9pt" }}
                   placeholder="Path"
                   onChange={this.handleRootChange}
@@ -138,9 +144,19 @@ export default class FileExplorer extends Component {
                 ></input>
               </td>
               <td style={{ textAlign: "right" }}>
-                <button onClick={this.handleAddExplorer}>+</button>
+                <button
+                  disabled={this.props.disabled}
+                  onClick={this.handleAddExplorer}
+                >
+                  +
+                </button>
                 {this.props.explorer_id !== 0 ? (
-                  <button onClick={this.handleRemoveExplorer}>-</button>
+                  <button
+                    disabled={this.props.disabled}
+                    onClick={this.handleRemoveExplorer}
+                  >
+                    -
+                  </button>
                 ) : null}
               </td>
             </tr>

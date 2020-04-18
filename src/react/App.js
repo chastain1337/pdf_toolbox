@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import FileExplorer from "./FileExplorer";
 import PDFNode from "./PDFNode";
 import { Worker } from "@phuocng/react-pdf-viewer";
@@ -20,6 +20,10 @@ export default class App extends React.Component {
       appVersion: "",
     };
   }
+
+  rerender = () => {
+    this.forceUpdate();
+  };
 
   createFileExplorerObject = (
     initialPath = "",
@@ -100,10 +104,20 @@ export default class App extends React.Component {
     });
   };
 
+  toggleExplorers = (explorerShouldBeDisabled) => {
+    this.setState((prevState) => {
+      const _explorers = prevState.explorers.map((explorer) => {
+        return { ...explorer, disabled: explorerShouldBeDisabled };
+      });
+      return { explorers: _explorers };
+    });
+  };
+
   render() {
     console.log(this.state.appName, this.state.appVersion);
     const explorers = this.state.explorers.map((explorer) => (
       <FileExplorer
+        disabled={explorer.disabled}
         initialPath={explorer.initialPath}
         key={explorer.key}
         explorer_id={explorer.explorer_id}
@@ -120,6 +134,7 @@ export default class App extends React.Component {
           .map((pdf) => pdf.id)}
       />
     ));
+
     const listToView = this.state.pdfsToView.map((pdf) => {
       return (
         <PDFNode
@@ -147,6 +162,7 @@ export default class App extends React.Component {
             className="border-top border-black"
             numberSelected={this.state.pdfsToView.length}
             selectedPDFPaths={this.state.pdfsToView.map((pdf) => pdf.path)}
+            toggleExplorers={this.toggleExplorers}
           />
           <Row>{explorers}</Row>
         </Container>
